@@ -1,3 +1,6 @@
+# This code and instructions on how to create the regression results can be found at the following
+# https://github.com/HLMelton/GIBill-IncomeRegression
+
 setwd("~/Documents/100W/Research Paper")
 
 popData <- read.csv("100WRPDS1.csv")
