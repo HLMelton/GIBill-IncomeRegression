@@ -40,6 +40,9 @@ These can be installed by running lines 9-13 and initialized by lines 15-19 in R
 
 
 ## Additional Notes 
+- The working directory will need to be changed to your specific location where the file was cloned to. RStudio makes this seamless with their file explotere which allows the WD to be set. 
 - Each Block of code includes a header comment to describe the function of each block and should be run sequentially to properly apply our filters of the sample population
 - When generating the plots, there is the native option that is built into R and the ggplot implimentation. the GGPlot outputs are much cleaner and faster than their native counterparts, hence their usage. 
 - Additionally there are extra linear regressions that have been commented out, to show the necessity for our specific regression method. 
+- To switch the data to generate the plots for the baseline period, you must modify line 23 to define popData instead of preData
+- 
