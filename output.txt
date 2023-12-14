@@ -1,0 +1,187 @@
+
+R version 4.3.0 (2023-04-21) -- "Already Tomorrow"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin20 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> setwd("~/Documents/100W/Research Paper")
+Error in setwd("~/Documents/100W/Research Paper") : 
+  cannot change working directory
+> setwd("~/Documents/100W/RScripts/100W/GIBill-IncomeRegression")
+> setwd("~/Documents/100W/RScripts/100W/GIBill-IncomeRegression")
+> popData <- read.csv("100WRPDS1.csv")
+> popData <- data.frame(popData)
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> library(ggplot2)
+Warning message:
+package ‘ggplot2’ was built under R version 4.3.1 
+> library(car)
+Loading required package: carData
+
+Attaching package: ‘car’
+
+The following object is masked from ‘package:dplyr’:
+
+    recode
+
+> library(nlme)
+
+Attaching package: ‘nlme’
+
+The following object is masked from ‘package:dplyr’:
+
+    collapse
+
+> library(mgcv)
+This is mgcv 1.9-0. For overview type 'help("mgcv-package")'.
+> library(dplyr)
+> library(ggplot2)
+> library(car)
+> library(nlme)
+> library(mgcv)
+> preData <- filter(popData, YEAR < 2000)
+> summary(preData)
+      YEAR           SEX             AGE             EDUC            EDUCD            INCTOT       
+ Min.   :1990   Min.   :1.000   Min.   : 0.00   Min.   : 0.000   Min.   :  1.00   Min.   : -19998  
+ 1st Qu.:1990   1st Qu.:1.000   1st Qu.:17.00   1st Qu.: 2.000   1st Qu.: 20.00   1st Qu.:   6000  
+ Median :1990   Median :2.000   Median :33.00   Median : 6.000   Median : 62.00   Median :  19000  
+ Mean   :1990   Mean   :1.515   Mean   :35.11   Mean   : 5.111   Mean   : 52.53   Mean   :2351455  
+ 3rd Qu.:1990   3rd Qu.:2.000   3rd Qu.:51.00   3rd Qu.: 7.000   3rd Qu.: 71.00   3rd Qu.:  75000  
+ Max.   :1990   Max.   :2.000   Max.   :90.00   Max.   :11.000   Max.   :116.00   Max.   :9999999  
+    VETSTAT          VETSTATD     
+ Min.   :0.0000   Min.   : 0.000  
+ 1st Qu.:1.0000   1st Qu.:11.000  
+ Median :1.0000   Median :11.000  
+ Mean   :0.8908   Mean   : 9.594  
+ 3rd Qu.:1.0000   3rd Qu.:11.000  
+ Max.   :2.0000   Max.   :23.000  
+> popData <- filter(popData, YEAR > 1990)
+> summary(popData)
+      YEAR           SEX             AGE             EDUC            EDUCD            INCTOT       
+ Min.   :2001   Min.   :1.000   Min.   : 0.00   Min.   : 0.000   Min.   :  1.00   Min.   : -19998  
+ 1st Qu.:2003   1st Qu.:1.000   1st Qu.:18.00   1st Qu.: 3.000   1st Qu.: 30.00   1st Qu.:  10000  
+ Median :2005   Median :2.000   Median :39.00   Median : 6.000   Median : 62.00   Median :  30000  
+ Mean   :2005   Mean   :1.516   Mean   :38.54   Mean   : 5.692   Mean   : 58.62   Mean   :2002120  
+ 3rd Qu.:2006   3rd Qu.:2.000   3rd Qu.:56.00   3rd Qu.: 7.000   3rd Qu.: 71.00   3rd Qu.:  85000  
+ Max.   :2007   Max.   :2.000   Max.   :95.00   Max.   :11.000   Max.   :116.00   Max.   :9999999  
+    VETSTAT          VETSTATD     
+ Min.   :0.0000   Min.   : 0.000  
+ 1st Qu.:1.0000   1st Qu.:11.000  
+ Median :1.0000   Median :11.000  
+ Mean   :0.8653   Mean   : 9.441  
+ 3rd Qu.:1.0000   3rd Qu.:11.000  
+ Max.   :2.0000   Max.   :22.000  
+> vetData <- filter(popData, VETSTAT == "2")    #Refine by Veteran Status
+> vetData <- filter(vetData, SEX == 1)          #Filtering by Sex to normalize 
+> summary(vetData)
+      YEAR           SEX         AGE             EDUC            EDUCD            INCTOT           VETSTAT 
+ Min.   :2001   Min.   :1   Min.   :17.00   Min.   : 0.000   Min.   :  2.00   Min.   : -19998   Min.   :2  
+ 1st Qu.:2003   1st Qu.:1   1st Qu.:52.00   1st Qu.: 6.000   1st Qu.: 62.00   1st Qu.:  18300   1st Qu.:2  
+ Median :2005   Median :1   Median :62.00   Median : 6.000   Median : 65.00   Median :  33000   Median :2  
+ Mean   :2005   Mean   :1   Mean   :61.23   Mean   : 7.116   Mean   : 73.18   Mean   :  45538   Mean   :2  
+ 3rd Qu.:2006   3rd Qu.:1   3rd Qu.:73.00   3rd Qu.: 8.000   3rd Qu.: 81.00   3rd Qu.:  55000   3rd Qu.:2  
+ Max.   :2007   Max.   :1   Max.   :95.00   Max.   :11.000   Max.   :116.00   Max.   :1112000   Max.   :2  
+    VETSTATD    
+ Min.   :20.00  
+ 1st Qu.:21.00  
+ Median :21.00  
+ Mean   :20.84  
+ 3rd Qu.:21.00  
+ Max.   :22.00  
+> civData <- filter(popData, VETSTAT != "2")    #Filter by Non Veterans
+> civData <- filter(civData, SEX == 1)          #Filter by Gender
+> civData <- filter(civData, AGE > 17)          #Filter by Mature Age
+> civData <- filter(civData, INCTOT != 9999999) # Filter Extrenious Values
+> summary(civData)
+      YEAR           SEX         AGE             EDUC            EDUCD            INCTOT           VETSTAT 
+ Min.   :2001   Min.   :1   Min.   :18.00   Min.   : 0.000   Min.   :  2.00   Min.   : -19998   Min.   :1  
+ 1st Qu.:2004   1st Qu.:1   1st Qu.:30.00   1st Qu.: 6.000   1st Qu.: 62.00   1st Qu.:  13000   1st Qu.:1  
+ Median :2005   Median :1   Median :42.00   Median : 6.000   Median : 65.00   Median :  30000   Median :1  
+ Mean   :2005   Mean   :1   Mean   :42.63   Mean   : 7.037   Mean   : 72.26   Mean   :  44470   Mean   :1  
+ 3rd Qu.:2006   3rd Qu.:1   3rd Qu.:53.00   3rd Qu.:10.000   3rd Qu.:101.00   3rd Qu.:  54260   3rd Qu.:1  
+ Max.   :2007   Max.   :1   Max.   :95.00   Max.   :11.000   Max.   :116.00   Max.   :1395800   Max.   :1  
+    VETSTATD    
+ Min.   :11.00  
+ 1st Qu.:11.00  
+ Median :11.00  
+ Mean   :11.08  
+ 3rd Qu.:11.00  
+ Max.   :13.00  
+> ggplot(vetData, aes(AGE,INCTOT)) + geom_smooth() + coord_cartesian(ylim = c(0, 100000)) + labs(title="Veteran Income",y="Income", x="Age")
+`geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
+> ggplot(vetData, aes(AGE,INCTOT)) + geom_point(color="Blue") + coord_cartesian(ylim = c(0, 1200000)) + labs(title="Veteran Income",y="Income", x="Age")
+> ggplot(civData, aes(AGE, INCTOT)) + geom_point() + coord_cartesian(ylim=c(0,1200000)) + labs(title="Civilian Income",y="Income", x="Age")
+> ggplot(civData, aes(AGE, INCTOT)) + geom_smooth() + coord_cartesian(ylim=c(0,100000)) + labs(title="Civilian Income",y="Income", x="Age")
+`geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
+> civRegression = gam(civData$INCTOT ~ civData$AGE + civData$EDUC)
+> vif(civRegression) #Checking for Multicolinearity
+                 GVIF Df GVIF^(1/(2*Df))
+civData$AGE  1.000186  0             Inf
+civData$EDUC 1.000186  0             Inf
+> summary(civRegression)
+
+Family: gaussian 
+Link function: identity 
+
+Formula:
+civData$INCTOT ~ civData$AGE + civData$EDUC
+
+Parametric coefficients:
+               Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  -42142.837    110.954  -379.8   <2e-16 ***
+civData$AGE     575.847      1.741   330.7   <2e-16 ***
+civData$EDUC   8819.793     10.920   807.7   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+R-sq.(adj) =   0.17   Deviance explained =   17%
+GCV = 2.7353e+09  Scale est. = 2.7353e+09  n = 3692532
+> vetRegression = gam(vetData$INCTOT ~ vetData$AGE + vetData$EDUC)
+> vif(vetRegression) #Checking for Multicolinearity
+                 GVIF Df GVIF^(1/(2*Df))
+vetData$AGE  1.008316  0             Inf
+vetData$EDUC 1.008316  0             Inf
+> summary(vetRegression)
+
+Family: gaussian 
+Link function: identity 
+
+Formula:
+vetData$INCTOT ~ vetData$AGE + vetData$EDUC
+
+Parametric coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  -4933.73     239.11  -20.63   <2e-16 ***
+vetData$AGE    -89.54       2.90  -30.88   <2e-16 ***
+vetData$EDUC  7863.12      19.51  403.09   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+R-sq.(adj) =  0.125   Deviance explained = 12.5%
+GCV = 2.2115e+09  Scale est. = 2.2115e+09  n = 1166369
