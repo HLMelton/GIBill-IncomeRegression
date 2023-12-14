@@ -57,14 +57,14 @@ ggplot(civData, aes(AGE, INCTOT)) + geom_smooth() + coord_cartesian(ylim=c(0,100
 
 ## --OLS Regressions--
 # Civilian Regression
-civRegression = lm(civData$INCTOT ~ civData$AGE + civData$EDUC)
+# civRegression = lm(civData$INCTOT ~ civData$AGE + civData$EDUC) #Linear Model
 civRegression = gam(civData$INCTOT ~ civData$AGE + civData$EDUC)
 
 vif(civRegression) #Checking for Multicolinearity
 summary(civRegression)
 
 #Veteran Regression
-vetRegression = lm(vetData$INCTOT ~ vetData$AGE + vetData$EDUC)
+# vetRegression = lm(vetData$INCTOT ~ vetData$AGE + vetData$EDUC) #Linear Model
 vetRegression = gam(vetData$INCTOT ~ vetData$AGE + vetData$EDUC)
 
 vif(vetRegression) #Checking for Multicolinearity
